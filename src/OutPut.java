@@ -14,6 +14,7 @@ public class OutPut {
     }
     void showResult(){
         System.out.println( "average Waiting Time:  "+this.avgWaitingTime+ "    average turn around time:  "+this.avgTurnAroundTime);
-        System.out.println("average response time:  "+this.avgResponseTime+"   Throughput:  "+this.throughput);
+        System.out.println("average response time:  "+this.avgResponseTime+"    Throughput:  "+this.throughput);
+        System.out.println("CPU utilization:  "+this.cpuUtilization+"%");
     }
 }

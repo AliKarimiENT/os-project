@@ -15,10 +15,10 @@ public class NPP
 
         int temp;
         int stemp;
-        for (int i = 0; i < this.proc.length; i++)
+        for (int i = 0; i < this.proc.length-1; i++)
         {
 
-            for (int j = 0; j < this.proc.length - i - 1; j++)
+            for (int j = 0; j < this.proc.length - i - 2; j++)
             {
                 if (at[j] > at[j + 1])
                 {
@@ -83,8 +83,9 @@ public class NPP
         int [] at=new int[this.proc.length];
         int [] prt=new int[this.proc.length];
         int [] pid=new int[this.proc.length];
+        int cpu_free_time=0;
 
-        for (int i = 1; i < this.proc.length; i++){
+        for (int i = 0; i < this.proc.length-1; i++){
             bt[i]=this.proc[i].bt;
             at[i]=this.proc[i].art;
             prt[i]=this.proc[i].priority;
@@ -104,12 +105,19 @@ public class NPP
         waitingTime[0] = turnAroundTime[0] - bt[0];
         responseTime[0]=0;
 
+
+        if(at[0]>0) {
+            cpu_free_time = at[0];
+        }
         for (int i = 1; i < this.proc.length; i++)
         {
             finishTime[i] = bt[i] + finishTime[i - 1];
             turnAroundTime[i] = finishTime[i] - at[i];
             waitingTime[i] = turnAroundTime[i] - bt[i];
             responseTime[i]=finishTime[i - 1];
+            if(at[i]>finishTime[i-1]) {
+                cpu_free_time += at[i] - finishTime[i-1];
+            }
         }
 
         float averageWaitingTime = 0;
@@ -117,21 +125,25 @@ public class NPP
         float averageResponse=0;
         float throghput =0;
         int totalBrustTime=0;
+        float cpuUtilazation=0;
+        float totalFinishTime=0;
 
         for (int i=0;i<this.proc.length;i++){
             averageWaitingTime+=waitingTime[i];
             averageTurnAroundTime+=turnAroundTime[i];
             averageResponse+=responseTime[i];
             totalBrustTime +=this.proc[i].bt;
+            totalFinishTime+=finishTime[i];
         }
 
         averageResponse=averageResponse/this.proc.length;
         averageWaitingTime=averageWaitingTime/this.proc.length;
         averageTurnAroundTime=averageTurnAroundTime/this.proc.length;
         throghput=(float)this.proc.length/(totalBrustTime);
+        cpuUtilazation=100-(cpu_free_time/totalFinishTime)*100;
 
         System.out.println("Non-preemptive Priority Scheduling Algorithm : \n");
-        OutPut npp = new OutPut(averageWaitingTime,averageTurnAroundTime,averageResponse,throghput, (float) 20.1);
+        OutPut npp = new OutPut(averageWaitingTime,averageTurnAroundTime,averageResponse,throghput, cpuUtilazation);
         npp.showResult();
     }
 

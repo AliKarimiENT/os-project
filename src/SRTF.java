@@ -6,16 +6,16 @@ public class SRTF
     public SRTF(Process [] readyQueue){
         this.proc=readyQueue;
     }
-    static void findWaitingTime(Process[] proc, int n,
+    static int [] findWaitingTime(Process[] proc, int n,
                                 int[] wt,int[]resT)
     {
         int[] rt = new int[n];
-
+        int cpu_free_time=0; int t=0;
         // Copy the burst time into rt[]
         for (int i = 0; i < n; i++)
             rt[i] = proc[i].bt;
 
-        int complete = 0, t = 0, minm = Integer.MAX_VALUE;
+        int complete = 0, minm = Integer.MAX_VALUE;
         int shortest = 0, finish_time;
         boolean check = false;
 
@@ -40,6 +40,7 @@ public class SRTF
 
             if (!check) {
                 t++;
+                cpu_free_time++;
                 continue;
             }
 
@@ -74,6 +75,8 @@ public class SRTF
             // Increment time
             t++;
         }
+        int [] result={t,cpu_free_time};
+        return result;
     }
 
     // Method to calculate turn around time
@@ -95,10 +98,11 @@ public class SRTF
         int [] resTime=new int[n];
         int total_rt=0;
         float throughput=0;
+        float cpuUtilazation=0;
 
         // Function to find waiting time of all
         // processes
-        findWaitingTime(this.proc, n, wt,resTime);
+        int time []=findWaitingTime(this.proc, n, wt,resTime);
 
         // Function to find turn around time for
         // all processes
@@ -112,22 +116,14 @@ public class SRTF
             throughput+=proc[i].bt;
         }
         throughput=(float)this.proc.length/(throughput);
+        cpuUtilazation=100-(time[1]/(float)time[0])*100;
 
         System.out.println("\nSRTF Scheduling Algorithm : \n");
 
-        OutPut npp = new OutPut((float)total_wt / (float)n,(float)total_tat / (float)n,(float)total_rt / (float)n,throughput, (float) 20.1);
+        OutPut npp = new OutPut((float)total_wt / (float)n,(float)total_tat / (float)n,(float)total_rt / (float)n,throughput,cpuUtilazation);
         npp.showResult();
 
     }
 
-    // Driver Method
-    public static void main(String[] args)
-    {
-        /*Process[] proc = { new Process(1, 6, 1,5),
-                new Process(2, 8, 1,2),
-                new Process(3, 7, 2,4),
-                new Process(4, 3, 3,3)};
 
-        findavgTime(proc, proc.length);*/
-    }
 }

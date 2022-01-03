@@ -15,6 +15,8 @@ public class SJF {
         int f[] = new int[n];  // f means it is flag it checks process is completed or not
         int rt[]=new int[n];
         int st=0, tot=0;
+        int cpu_free_time=0;
+        float cpuUtilazation=0;
         float avgwt=0, avgta=0,avgrt=0,throughput=0;
 
         while(true)
@@ -36,7 +38,10 @@ public class SJF {
             }
             /* If c==n means c value can not updated because no process arrival time< system time so we increase the system time */
             if (c==proc.length)
+            {
                 st++;
+                cpu_free_time++;
+            }
             else
             {
                 rt[c]=st;
@@ -57,7 +62,8 @@ public class SJF {
             throughput +=this.proc[i].bt;
         }
         throughput=(float)this.proc.length/(throughput);
-        OutPut npp = new OutPut((float)(avgwt/n),(float)(avgta/n),(float)(avgrt/n),throughput, (float) 20.1);
+        cpuUtilazation=100-(cpu_free_time/(float)st)*100;
+        OutPut npp = new OutPut((float)(avgwt/n),(float)(avgta/n),(float)(avgrt/n),throughput, cpuUtilazation);
         npp.showResult();
 
     }
