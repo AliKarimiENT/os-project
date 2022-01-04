@@ -99,6 +99,7 @@ public class SRTF
         int total_rt=0;
         float throughput=0;
         float cpuUtilazation=0;
+        float spendTime=0;
 
         // Function to find waiting time of all
         // processes
@@ -117,13 +118,25 @@ public class SRTF
         }
         throughput=(float)this.proc.length/(throughput);
         cpuUtilazation=100-(time[1]/(float)time[0])*100;
+        spendTime=time[0]*getUnitTime()/1000000;
 
         System.out.println("\nSRTF Scheduling Algorithm : \n");
 
-        OutPut npp = new OutPut((float)total_wt / (float)n,(float)total_tat / (float)n,(float)total_rt / (float)n,throughput,cpuUtilazation);
+        OutPut npp = new OutPut((float)total_wt / (float)n,(float)total_tat / (float)n,(float)total_rt / (float)n,throughput,cpuUtilazation,spendTime);
         npp.showResult();
 
     }
+    long getUnitTime(){
+        long start1 = System.nanoTime();
+        int temp =0;
+        for (int i=0; i < 10000; i++)
+            if (i % 2 == 0)
+                temp= i/2;
+            else
+                temp=2*i;
 
+        long end1 = System.nanoTime();
+        return end1-start1;
+    }
 
 }

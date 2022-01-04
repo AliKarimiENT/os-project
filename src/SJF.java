@@ -16,6 +16,7 @@ public class SJF {
         int rt[]=new int[n];
         int st=0, tot=0;
         int cpu_free_time=0;
+        float spendTime=0;
         float cpuUtilazation=0;
         float avgwt=0, avgta=0,avgrt=0,throughput=0;
 
@@ -63,10 +64,22 @@ public class SJF {
         }
         throughput=(float)this.proc.length/(throughput);
         cpuUtilazation=100-(cpu_free_time/(float)st)*100;
-        OutPut npp = new OutPut((float)(avgwt/n),(float)(avgta/n),(float)(avgrt/n),throughput, cpuUtilazation);
+        spendTime=st*getUnitTime()/1000000;
+        OutPut npp = new OutPut((float)(avgwt/n),(float)(avgta/n),(float)(avgrt/n),throughput, cpuUtilazation,spendTime);
         npp.showResult();
 
     }
+    long getUnitTime(){
+        long start1 = System.nanoTime();
+        int temp =0;
+        for (int i=0; i < 10000; i++)
+            if (i % 2 == 0)
+                temp= i/2;
+            else
+                temp=2*i;
 
+        long end1 = System.nanoTime();
+        return end1-start1;
+    }
 
 }

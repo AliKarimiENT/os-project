@@ -127,6 +127,7 @@ public class NPP
         int totalBrustTime=0;
         float cpuUtilazation=0;
         float totalFinishTime=0;
+        float spendTime=0;
 
         for (int i=0;i<this.proc.length;i++){
             averageWaitingTime+=waitingTime[i];
@@ -141,9 +142,10 @@ public class NPP
         averageTurnAroundTime=averageTurnAroundTime/this.proc.length;
         throghput=(float)this.proc.length/(totalBrustTime);
         cpuUtilazation=100-(cpu_free_time/totalFinishTime)*100;
+        spendTime=finishTime[this.proc.length-1]*getUnitTime()/1000000;
 
         System.out.println("Non-preemptive Priority Scheduling Algorithm : \n");
-        OutPut npp = new OutPut(averageWaitingTime,averageTurnAroundTime,averageResponse,throghput, cpuUtilazation);
+        OutPut npp = new OutPut(averageWaitingTime,averageTurnAroundTime,averageResponse,throghput, cpuUtilazation,spendTime);
         npp.showResult();
     }
 
