@@ -57,9 +57,9 @@ public class SJF {
         System.out.println("\nSJF Scheduling Algorithm : \n");
         for(int i=0;i<proc.length;i++)
         {
-            avgwt+= wt[i];
+            avgwt+=wt[i];
             avgta+= ta[i];
-            avgrt+=rt[i];
+            avgrt+=wt[i];
             throughput +=this.proc[i].bt;
         }
         throughput=(float)this.proc.length/(throughput);

@@ -18,7 +18,7 @@ public class SRTF
         int complete = 0, minm = Integer.MAX_VALUE;
         int shortest = 0, finish_time;
         boolean check = false;
-
+        boolean []checkResponse=new boolean[n];
         // Process until all processes gets
         // completed
         while (complete != n) {
@@ -34,7 +34,11 @@ public class SRTF
                     minm = rt[j];
                     shortest = j;
                     check = true;
-                    resT[j]=t;
+                    if(!checkResponse[j]){
+                        resT[j]=t-proc[j].art;
+                        checkResponse[j]=true;
+                    }
+
                 }
             }
 
@@ -114,6 +118,7 @@ public class SRTF
             total_wt = total_wt + wt[i];
             total_tat = total_tat + tat[i];
             total_rt+=resTime[i];
+
             throughput+=proc[i].bt;
         }
         throughput=(float)this.proc.length/(throughput);

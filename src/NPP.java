@@ -10,17 +10,16 @@ public class NPP
         this.proc=readyQueue;
     }
 
-    void sortAccordingArrivalTimeAndPriority(int[] at, int[] bt, int[] prt, int[] pid)
+    void sortAccordingArrivalTimeAndPriority(int[] at, int[] bt, int[] prt, int[] pid,int st)
     {
-
         int temp;
         int stemp;
-        for (int i = 0; i < this.proc.length-1; i++)
+        for (int i = 0; i <= this.proc.length-1; i++)
         {
 
-            for (int j = 0; j < this.proc.length - i - 2; j++)
+            for (int j = st; j < this.proc.length - i - 1; j++)
             {
-                if (at[j] > at[j + 1])
+                if ((at[j] > at[j + 1]) && st==0)
                 {
                     //swapping arrival time
                     temp = at[j];
@@ -44,7 +43,8 @@ public class NPP
 
                 }
                 //sorting according to priority when arrival timings are same
-                if (at[j] == at[j + 1])
+
+                if ((at[j] == at[j + 1]) || st!=0)
                 {
                     if (prt[j] > prt[j + 1])
                     {
@@ -85,7 +85,7 @@ public class NPP
         int [] pid=new int[this.proc.length];
         int cpu_free_time=0;
 
-        for (int i = 0; i < this.proc.length-1; i++){
+        for (int i = 0; i <= this.proc.length-1; i++){
             bt[i]=this.proc[i].bt;
             at[i]=this.proc[i].art;
             prt[i]=this.proc[i].priority;
@@ -97,13 +97,13 @@ public class NPP
         int turnAroundTime[] = new int[this.proc.length];
         int responseTime[] = new int[this.proc.length];
 
-        sortAccordingArrivalTimeAndPriority(at, bt, prt, pid);
+        sortAccordingArrivalTimeAndPriority(at, bt, prt, pid,0);
 
         //calculating waiting & turn-around time for each process
         finishTime[0] = at[0] + bt[0];
         turnAroundTime[0] = finishTime[0] - at[0];
-        waitingTime[0] = turnAroundTime[0] - bt[0];
-        responseTime[0]=0;
+        waitingTime[0] = turnAroundTime[0];
+        responseTime[0]=at[0];
 
 
         if(at[0]>0) {
@@ -111,13 +111,19 @@ public class NPP
         }
         for (int i = 1; i < this.proc.length; i++)
         {
-            finishTime[i] = bt[i] + finishTime[i - 1];
-            turnAroundTime[i] = finishTime[i] - at[i];
-            waitingTime[i] = turnAroundTime[i] - bt[i];
-            responseTime[i]=finishTime[i - 1];
             if(at[i]>finishTime[i-1]) {
                 cpu_free_time += at[i] - finishTime[i-1];
+                responseTime[i]=at[i];
+                finishTime[i] = bt[i] + at[i];
             }
+            else {
+                sortAccordingArrivalTimeAndPriority(at, bt, prt, pid,i);
+                responseTime[i]=finishTime[i - 1];
+                finishTime[i] = bt[i] + finishTime[i - 1];
+            }
+
+            turnAroundTime[i] = finishTime[i] - at[i];
+            waitingTime[i] = turnAroundTime[i] - bt[i];
         }
 
         float averageWaitingTime = 0;
@@ -132,10 +138,11 @@ public class NPP
         for (int i=0;i<this.proc.length;i++){
             averageWaitingTime+=waitingTime[i];
             averageTurnAroundTime+=turnAroundTime[i];
-            averageResponse+=responseTime[i];
-            totalBrustTime +=this.proc[i].bt;
-            totalFinishTime+=finishTime[i];
+            averageResponse+=waitingTime[i];
+            totalBrustTime =this.proc[i].bt;
+
         }
+        totalFinishTime+=finishTime[this.proc.length-1];
 
         averageResponse=averageResponse/this.proc.length;
         averageWaitingTime=averageWaitingTime/this.proc.length;
@@ -144,7 +151,7 @@ public class NPP
         cpuUtilazation=100-(cpu_free_time/totalFinishTime)*100;
         spendTime=finishTime[this.proc.length-1]*getUnitTime()/1000000;
 
-        System.out.println("Non-preemptive Priority Scheduling Algorithm : \n");
+        System.out.println("\nNon-preemptive Priority Scheduling Algorithm : \n");
         OutPut npp = new OutPut(averageWaitingTime,averageTurnAroundTime,averageResponse,throghput, cpuUtilazation,spendTime);
         npp.showResult();
     }
